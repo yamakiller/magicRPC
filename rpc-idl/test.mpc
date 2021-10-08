@@ -1,0 +1,26 @@
+namespace:login {
+
+//测试一下
+@message:Widget {
+    double value1:0;
+    string value2:1;
+}
+
+@message:UserInfo {
+    string name:0;
+    int age:1;
+    short[] sex:2;
+    Widget[] widget:3;
+    string[] address:4;
+}
+
+@message:Signin {
+    string name:0;
+	string pwd:1;
+}
+
+@service:Test {
+    UserInfo getName(Signin sign); //dfdfddf
+}
+
+}
