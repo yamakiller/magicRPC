@@ -1,1 +1,3 @@
 vendor/*
+rpc-idl/bin/*
+rpc-idl/obj/*

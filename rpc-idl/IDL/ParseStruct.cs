@@ -102,7 +102,6 @@ namespace IDL
         {
             string strs = "";
             string spacesStr = "";
-            Console.WriteLine(structInfo.StructName);
             List<MemberAttr> memberAttrInfo = structInfo.MemberAttrs;
             string structName = structInfo.StructName;
             deserializeRecursive++;
