@@ -5,7 +5,7 @@ namespace IDL
     {
         public static string CreateSpaceCode(ParseNamespace namespaceInterface)
         {
-            return "package " + namespaceInterface.GetName();
+            return "package " + namespaceInterface.GetName() + ";";
         }
     }
 }

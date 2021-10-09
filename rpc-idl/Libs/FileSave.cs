@@ -2,7 +2,7 @@ using System;
 using System.IO;
 
 
-namespace IDL
+namespace Libs
 {
     public class FileSave
     {
