@@ -9,7 +9,7 @@ namespace IDL
         public static string CreateFlatbufferCode(ParseStruct structInterface)
         {
             m_flatbufferVariable["bool"] = "bool";
-            m_flatbufferVariable["byte"] = "byte";
+            m_flatbufferVariable["int8"] = "byte";
             m_flatbufferVariable["uint8"] = "ubyte";
             m_flatbufferVariable["int16"] = "short";
             m_flatbufferVariable["uint16"] = "ushort";

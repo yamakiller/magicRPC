@@ -127,7 +127,7 @@ namespace IDL
                         strs += spacesStr + "\tvar " + iterName + " " + iterType + "FB\n";
 
                         strs += spacesStr + "\tif ok := " + fbName + "." + StringTo.ToUpper(iterName) + "(&" + iterName + ",i);!ok {\n";
-                        strs += spacesStr + "\t\treturn errors.New(\"deserialize " + fbName + "=>" + StringTo.ToUpper(iterName) + " fail\")\n";
+                        strs += spacesStr + "\t\treturn nil, errors.New(\"deserialize " + fbName + "=>" + StringTo.ToUpper(iterName) + " fail\")\n";
                         strs += spacesStr + "\t}\n\n";
                         strs += ParseStruct.CreateDeserializeCodeForFlatbuffer((ParseStruct)Vars.GetStruct(iterType), tmpName, iterName);
                         strs += spacesStr + "\t" + varName + "." + iterName + " = append(" + varName + "." + iterName + "," + tmpName + ")\n";

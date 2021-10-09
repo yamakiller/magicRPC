@@ -9,7 +9,7 @@ namespace IDL
         public static string CreateServerInterfaceCode(ParseInterface parse)
         {
 
-            string interfaceClassName = parse.InterfaceName + "Interface";
+            string interfaceClassName = StringTo.ToUpper(parse.InterfaceName) + "Interface";
             string interfaceClassVar = parse.InterfaceName[0] +
             Md5Helper.Md5(interfaceClassName).ToLower().Replace("-", "");
             interfaceClassVar = interfaceClassVar.ToLower();
@@ -27,7 +27,7 @@ namespace IDL
             strs += "}\n\n";
 
 
-            strs += "type " + parse.InterfaceName + "Interface struct {\n";
+            strs += "type " + StringTo.ToUpper(parse.InterfaceName) + "Interface struct {\n";
             strs += "\t_implsrv *rpcs.Server\n";
             strs += "}\n\n";
 
@@ -41,7 +41,7 @@ namespace IDL
 
         public static string CreateServerServiceCode(ParseInterface parse)
         {
-            string serviceName = parse.InterfaceName + "Service";
+            string serviceName = StringTo.ToUpper(parse.InterfaceName) + "Service";
             string strs = "type " + serviceName + " struct {\n";
             strs += "\t_implcontext *rpcb.Context\n";
             strs += "}\n\n";
@@ -56,7 +56,7 @@ namespace IDL
 
         public static string CreateClientInterfaceCode(ParseInterface parse)
         {
-            string interfaceClassName = StringTo.ToLower(parse.InterfaceName, 0) + "Interface";
+            string interfaceClassName = StringTo.ToUpper(parse.InterfaceName, 0) + "Interface";
             string strs = "type " + interfaceClassName + " struct {\n";
             strs += "}\n\n";
             foreach (FunctionAttr funAttr in parse.Functions)
@@ -69,7 +69,7 @@ namespace IDL
 
         public static string CreateClientServiceCode(ParseInterface parse)
         {
-            string serviceName = parse.InterfaceName + "Service";
+            string serviceName = StringTo.ToUpper(parse.InterfaceName) + "Service";
             string strs = "type " + serviceName + " struct {\n";
             strs += "\t" + "_brokerImpl *rpclient.Broker\n";
             strs += "\t" + "_compressType rpcc.MRPC_PACKAGE_COMPRESS\n";
@@ -96,7 +96,7 @@ namespace IDL
     {
         public static string CreateServerInterfaceCode(FunctionAttr functionAttrInterface, string inerfaceName)
         {
-            string strs = "func (slf *" + inerfaceName + "Interface)  " + functionAttrInterface.FuncName + "Interface(context *rpcb.Context, req *rpcs.Request) error{\n";
+            string strs = "func (slf *" + StringTo.ToUpper(inerfaceName) + "Interface)  " + functionAttrInterface.FuncName + "Interface(context *rpcb.Context, req *rpcs.Request) error{\n";
             strs += "\t" + functionAttrInterface.FuncArgMap.VarName + "FB := GetRootAs" + functionAttrInterface.FuncArgMap.TypeName + "FB(req.Pop(), 0)\n";
             strs += "\t" + functionAttrInterface.FuncArgMap.VarName + " := " + functionAttrInterface.FuncArgMap.TypeName + "{}\n";
 
@@ -105,7 +105,7 @@ namespace IDL
             strs += "" + ParseStruct.CreateDeserializeCodeForFlatbuffer((ParseStruct)Vars.GetStruct(functionAttrInterface.FuncArgMap.TypeName),
                         functionAttrInterface.FuncArgMap.VarName, functionAttrInterface.FuncArgMap.VarName + "FB") + "\n\n";
 
-            strs += "\tdeleageService := " + inerfaceName + "Service{_implcontext:context}\n";
+            strs += "\tdeleageService := " + StringTo.ToUpper(inerfaceName) + "Service{_implcontext:context}\n";
             strs += "\t" + functionAttrInterface.FuncReturn.VarName + " := deleageService." + functionAttrInterface.FuncName + "(" + functionAttrInterface.FuncArgMap.VarName + ")\n";
 
 
@@ -132,7 +132,7 @@ namespace IDL
             string strs = "";
             string funcArgsStrs = "";
             string returnStrs = StringTo.ToLower(functionAttrInterface.FuncReturn.TypeName) + "Ret";
-            string serviceName = inerfaceName + "Service";
+            string serviceName = StringTo.ToUpper(inerfaceName) + "Service";
 
             FunctionArg v = functionAttrInterface.FuncArgMap;
             funcArgsStrs += v.VarName + " " + v.TypeName;
@@ -153,7 +153,7 @@ namespace IDL
             string strs = "";
             string funcArgsStr = "";
             string funcArgsStructStr = "";
-            string funcInterfaceName = StringTo.ToLower(inerfaceName, 0) + "Interface";
+            string funcInterfaceName = StringTo.ToUpper(inerfaceName, 0) + "Interface";
 
 
             FunctionArg v = functionAttrInterface.FuncArgMap;
@@ -167,15 +167,15 @@ namespace IDL
             strs += "\tconst funcID = " + functionAttrInterface.FuncHash + "\n";
             strs += "\tbuilder := flatbuffers.NewBuilder(512)\n";
             strs += "\t//input flatbuffer code for " + v.TypeName + "FB class\n";
-            strs += ParseStruct.CreateSerializeCodeForFlatbuffer((ParseStruct)Vars.GetStruct(functionAttrInterface.FuncReturn.TypeName),
-                                                                         functionAttrInterface.FuncReturn.VarName);
-            strs += "\tbuilder.Finish(" + functionAttrInterface.FuncReturn.VarName + "Pos)\n";
-            strs += "\treq := NewRequest(funcID, compressType, builder.FinishedBytes())\n";
+            strs += ParseStruct.CreateSerializeCodeForFlatbuffer((ParseStruct)Vars.GetStruct(v.TypeName),
+                                                                         v.VarName);
+            strs += "\tbuilder.Finish(" + v.VarName + "Pos)\n";
+            strs += "\treq := rpclient.NewRequest(funcID, compressType, builder.FinishedBytes())\n";
             strs += "\tresp, err := broker.SyncCall(req, rpcc.MRPC_PT_FLATBUFF)\n";
             strs += "\tif err != nil{\n";
             strs += "\t\treturn nil, err\n";
             strs += "\t}\n\n";
-            strs += "\tif resp._responseStatus != rpcc.RS_OK {\n";
+            strs += "\tif resp.GetStatus() != rpcc.RS_OK {\n";
             strs += "\t\treturn nil, errors.New(\"rpc sync call error, function:" + functionAttrInterface.FuncName + "\")\n";
             strs += "\t}\n\n";
 
@@ -194,7 +194,7 @@ namespace IDL
         public static string CreateClientServiceCode(FunctionAttr functionAttrInterface, string inerfaceName)
         {
             string serviceName = StringTo.ToUpper(inerfaceName, 0) + "Service";
-            string interfaceName = StringTo.ToLower(inerfaceName, 0) + "Interface";
+            string interfaceName = StringTo.ToUpper(inerfaceName, 0) + "Interface";
 
             string selfName = inerfaceName[0].ToString().ToLower();
             FunctionArg v = functionAttrInterface.FuncArgMap;
@@ -202,7 +202,8 @@ namespace IDL
 
             string strs = "func (" + selfName + " *" + serviceName + ") " + StringTo.ToUpper(functionAttrInterface.FuncName, 0) + "(";
             strs += funcArgsStr + ", timeout int" + ") (*" + functionAttrInterface.FuncReturn.TypeName + ", error) {\n";
-            strs += "\treturn " + interfaceName + "{}." + StringTo.ToLower(functionAttrInterface.FuncName, 0) + "Interface(" + selfName + "._brokerImpl" +
+            strs += "\ts := " + interfaceName + "{}\n";
+            strs += "\treturn s." + StringTo.ToLower(functionAttrInterface.FuncName, 0) + "Interface(" + selfName + "._brokerImpl" +
                     ", " + v.VarName + ", " + selfName + "._compressType, timeout)\n";
             strs += "}\n\n";
             return strs;
