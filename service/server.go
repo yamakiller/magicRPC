@@ -3,6 +3,7 @@ package service
 import (
 	"crypto/tls"
 	"errors"
+	"reflect"
 	"sync"
 
 	flatbuffers "github.com/google/flatbuffers/go"
@@ -128,10 +129,23 @@ type Server struct {
 
 func (s *Server) ListenTCPAndServe(addr string) error {
 	s._networkProtocol = rpc.MRPC_NETWORK_PROTOCOL_TCP
-	s._network = &netboxs.TCPBox{
+	box := &netboxs.TCPBox{
 		Box: *boxs.SpawnBox(nil),
 	}
 
+	_, err := s._core.New(func(pid *actors.PID) actors.Actor {
+		box.WithPID(pid)
+		box.WithMax(int32(s._clientOfMax))
+		box.Register(reflect.TypeOf(&netmsgs.Accept{}), s.onAccept)
+		box.Register(reflect.TypeOf(&netmsgs.Message{}), s.onMessage)
+		box.Register(reflect.TypeOf(&netmsgs.Closed{}), s.onClosed)
+		return box
+	})
+	if err != nil {
+		return err
+	}
+
+	s._network = box
 	s._network.WithMax(s._clientOfMax)
 	s._network.WithPool(
 		&connPools{
@@ -144,10 +158,22 @@ func (s *Server) ListenTCPAndServe(addr string) error {
 
 func (s *Server) ListenTLSAndServe(addr string, ptls *tls.Config) error {
 	s._networkProtocol = rpc.MRPC_NETWORK_PROTOCOL_TLS
-	s._network = &netboxs.TCPBox{
+	box := &netboxs.TCPBox{
 		Box: *boxs.SpawnBox(nil),
 	}
-	//TODO: 未完成
+
+	_, err := s._core.New(func(pid *actors.PID) actors.Actor {
+		box.WithPID(pid)
+		box.WithMax(int32(s._clientOfMax))
+		box.Register(reflect.TypeOf(&netmsgs.Accept{}), s.onAccept)
+		box.Register(reflect.TypeOf(&netmsgs.Message{}), s.onMessage)
+		box.Register(reflect.TypeOf(&netmsgs.Closed{}), s.onClosed)
+		return box
+	})
+
+	if err != nil {
+		return err
+	}
 
 	return s._network.ListenAndServeTls(addr, ptls)
 }
