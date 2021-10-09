@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "4QNa2qkTivCmsa9kvHnj9w/5He015SH1MnxT6/sTUKoz3qz/6EmbXbbi3UhqVjNT8X1oqno2rDwJUMxQTjvSmA==",
+  "dgSpecHash": "nf6VIWiU9zSnUNQ97OmRKBTLkloR8mM5zChHTemiAO4qHrOw7jxLafYq6nJ28YmWZxHbtDbNB6gFx+fs8G2pnA==",
   "success": true,
-  "projectFilePath": "D:\\workspace\\go\\src\\github.com\\yamakiller\\magicRPC\\rpc-idl\\rpc-idl.csproj",
+  "projectFilePath": "I:\\Work\\src\\github.com\\yamakiller\\magicRPC\\rpc-idl\\rpc-idl.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

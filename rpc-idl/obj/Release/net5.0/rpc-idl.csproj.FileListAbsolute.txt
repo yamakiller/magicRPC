@@ -1,0 +1,16 @@
+I:\Work\src\github.com\yamakiller\magicRPC\rpc-idl\bin\Release\net5.0\rpc-idl.exe
+I:\Work\src\github.com\yamakiller\magicRPC\rpc-idl\bin\Release\net5.0\rpc-idl.deps.json
+I:\Work\src\github.com\yamakiller\magicRPC\rpc-idl\bin\Release\net5.0\rpc-idl.runtimeconfig.json
+I:\Work\src\github.com\yamakiller\magicRPC\rpc-idl\bin\Release\net5.0\rpc-idl.runtimeconfig.dev.json
+I:\Work\src\github.com\yamakiller\magicRPC\rpc-idl\bin\Release\net5.0\rpc-idl.dll
+I:\Work\src\github.com\yamakiller\magicRPC\rpc-idl\bin\Release\net5.0\ref\rpc-idl.dll
+I:\Work\src\github.com\yamakiller\magicRPC\rpc-idl\bin\Release\net5.0\rpc-idl.pdb
+I:\Work\src\github.com\yamakiller\magicRPC\rpc-idl\obj\Release\net5.0\rpc-idl.csproj.AssemblyReference.cache
+I:\Work\src\github.com\yamakiller\magicRPC\rpc-idl\obj\Release\net5.0\rpc-idl.GeneratedMSBuildEditorConfig.editorconfig
+I:\Work\src\github.com\yamakiller\magicRPC\rpc-idl\obj\Release\net5.0\rpc-idl.AssemblyInfoInputs.cache
+I:\Work\src\github.com\yamakiller\magicRPC\rpc-idl\obj\Release\net5.0\rpc-idl.AssemblyInfo.cs
+I:\Work\src\github.com\yamakiller\magicRPC\rpc-idl\obj\Release\net5.0\rpc-idl.csproj.CoreCompileInputs.cache
+I:\Work\src\github.com\yamakiller\magicRPC\rpc-idl\obj\Release\net5.0\rpc-idl.dll
+I:\Work\src\github.com\yamakiller\magicRPC\rpc-idl\obj\Release\net5.0\ref\rpc-idl.dll
+I:\Work\src\github.com\yamakiller\magicRPC\rpc-idl\obj\Release\net5.0\rpc-idl.pdb
+I:\Work\src\github.com\yamakiller\magicRPC\rpc-idl\obj\Release\net5.0\rpc-idl.genruntimeconfig.cache

@@ -8,24 +8,26 @@
     "net5.0": []
   },
   "packageFolders": {
-    "C:\\Users\\29627\\.nuget\\packages\\": {}
+    "C:\\Users\\DH\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\workspace\\go\\src\\github.com\\yamakiller\\magicRPC\\rpc-idl\\rpc-idl.csproj",
+      "projectUniqueName": "I:\\Work\\src\\github.com\\yamakiller\\magicRPC\\rpc-idl\\rpc-idl.csproj",
       "projectName": "rpc-idl",
-      "projectPath": "D:\\workspace\\go\\src\\github.com\\yamakiller\\magicRPC\\rpc-idl\\rpc-idl.csproj",
-      "packagesPath": "C:\\Users\\29627\\.nuget\\packages\\",
-      "outputPath": "D:\\workspace\\go\\src\\github.com\\yamakiller\\magicRPC\\rpc-idl\\obj\\",
+      "projectPath": "I:\\Work\\src\\github.com\\yamakiller\\magicRPC\\rpc-idl\\rpc-idl.csproj",
+      "packagesPath": "C:\\Users\\DH\\.nuget\\packages\\",
+      "outputPath": "I:\\Work\\src\\github.com\\yamakiller\\magicRPC\\rpc-idl\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\29627\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\DH\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net5.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -58,7 +60,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.200\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
       }
     }
   }
