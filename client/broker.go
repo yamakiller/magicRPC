@@ -32,13 +32,13 @@ func New(opts ...Option) (*Broker, error) {
 	}
 
 	broker := &Broker{
-		_name:            opt._name,
-		_clientSn:        0,
-		_clientRequestSn: 0,
-		_clientRecv:      make(chan *Request),
-		_packageProtocol: opt._packageProtocol,
-		_packageCompress: opt._packageCompress,
-		_log:             opt._logAgent,
+		_name:              opt._name,
+		_clientRequestSn:   0,
+		_clientRequestSync: 0,
+		_clientRecv:        make(chan *Request),
+		_packageProtocol:   opt._packageProtocol,
+		_packageCompress:   opt._packageCompress,
+		_log:               opt._logAgent,
 	}
 
 	broker._client = &magiclibconn.TCPClient{
@@ -99,15 +99,15 @@ var defaultOptions = Options{_sendBufferOfNumber: 8,
 }
 
 type Broker struct {
-	_name            string
-	_client          magiclibconn.Client
-	_clientSn        uint32
-	_clientRequestSn uint32
-	_clientRecv      chan *Response
-	_log             log.LogAgent
-	_networkProtocol rpc.MRPC_NETWORK_PROTOCOL
-	_packageProtocol rpc.MRPC_PACKAGE_PROTOCOL
-	_packageCompress rpc.MRPC_PACKAGE_COMPRESS
+	_name              string
+	_client            magiclibconn.Client
+	_clientRequestSn   uint32
+	_clientRequestSync uint32
+	_clientRecv        chan *Response
+	_log               log.LogAgent
+	_networkProtocol   rpc.MRPC_NETWORK_PROTOCOL
+	_packageProtocol   rpc.MRPC_PACKAGE_PROTOCOL
+	_packageCompress   rpc.MRPC_PACKAGE_COMPRESS
 }
 
 func (b *Broker) Connect(addr string, timeout int) error {
@@ -133,12 +133,12 @@ func (b *Broker) SyncCall(req *Request, prootocol rpc.MRPC_PACKAGE_PROTOCOL) (*R
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(req._timeout)*time.Millisecond)
 	defer cancel()
 
-	req._sequeNum = b.getSerialOfNumber()
+	sn := b.getSerialOfNumber()
+	req._sequeNum = sn
 	req._timestamp = rpctime.Click()
-	b._clientRequestSn = req._sequeNum
 
 	if err := b._client.SendTo(req); err != nil {
-		b._clientRequestSn = 0
+		b._clientRequestSync = 0
 		return nil, err
 	}
 
@@ -152,12 +152,9 @@ func (b *Broker) SyncCall(req *Request, prootocol rpc.MRPC_PACKAGE_PROTOCOL) (*R
 	}
 }
 
-func (b *Broker) AsyncCall(req *Request, prootocol rpc.MRPC_PACKAGE_PROTOCOL /*TODO:需要一个回调函数地址*/) error {
-	return nil
-}
-
 func (b *Broker) Close() {
 	b._client.Close()
+
 	close(b._clientRecv)
 }
 
@@ -246,21 +243,35 @@ func (b *Broker) onMessage(msg interface{}) {
 
 	if resp._sequeNum == 0 && pk.Func() == 0 {
 		//心跳
+		keepReq := &Request{
+			_compressType:   b._packageCompress,
+			_responseStatus: rpc.RS_OK,
+			_func:           0,
+			_nonblock:       false,
+			_timestamp:      0,
+			_timeout:        0,
+			_sequeNum:       0,
+		}
+
+		if err := b._client.SendTo(keepReq); err != nil {
+			b.ErrorLog(b._name, "keepalive response fail:%v", err)
+			return
+		}
+
 		return
 	}
 
-	if resp._sequeNum != b._clientRequestSn {
-		b.ErrorLog("response sn not request sn, response:%d request%d, %v", resp._sequeNum, b._clientRequestSn, resp)
+	if atomic.CompareAndSwapUint32(&b._clientRequestSync, resp._sequeNum, 0) {
+		b._clientRecv <- resp
 		return
 	}
 
-	b._clientRequestSn = 0
-	b._clientRecv <- resp
+	b.ErrorLog("response undefine register task %d", resp._sequeNum)
 }
 
 func (b *Broker) getSerialOfNumber() uint32 {
 	for {
-		sn := atomic.AddUint32(&b._clientSn, 1)
+		sn := atomic.AddUint32(&b._clientRequestSn, 1)
 		if sn != 0 {
 			return sn
 		}
