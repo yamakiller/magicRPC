@@ -13,13 +13,13 @@ namespace rpc_idl
             string inFile = pargs.Get("-in", null);
             if (inFile == null)
             {
-                Console.WriteLine("请输入需要解析的文件,参数-in=xxxxx");
+                Console.WriteLine("请输入需要解析的文件,参数-in:xxxxx");
                 return;
             }
             string outFilePath = pargs.Get("-out", null);
             if (outFilePath == null)
             {
-                Console.WriteLine("请输入输出文件目录,参数-out=....");
+                Console.WriteLine("请输入输出文件目录,参数-out:....");
                 return;
             }
             string language = pargs.Get("-language", "go");
