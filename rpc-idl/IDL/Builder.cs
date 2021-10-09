@@ -231,7 +231,7 @@ namespace IDL
         void golangVariableInit()
         {
             Vars.RegisterVariable("bool", "bool");
-            Vars.RegisterVariable("byte", "byte");
+            Vars.RegisterVariable("byte", "int8");
             Vars.RegisterVariable("ubyte", "uint8");
             Vars.RegisterVariable("short", "int16");
             Vars.RegisterVariable("ushort", "uint16");
