@@ -44,7 +44,7 @@ func (p *Packet) Payload() []byte {
 }
 
 func (p *Packet) unmarshal(r io.Reader) error {
-	if err := p.unmarshal(r); err != nil {
+	if err := p._header.unmarshal(r); err != nil {
 		return err
 	}
 
