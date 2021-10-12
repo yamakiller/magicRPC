@@ -163,14 +163,14 @@ namespace IDL
 
             strs += "func (" + inerfaceName[0].ToString().ToLower() + " *" + funcInterfaceName + ") " +
                        StringTo.ToLower(functionAttrInterface.FuncName, 0) + "Interface(broker" + " *rpclient.Broker, " +
-                       funcArgsStr + ", compressType rpcc.MRPC_PACKAGE_COMPRESS, timeout int) (*" + functionAttrInterface.FuncReturn.TypeName + ", error) {\n";
+                       funcArgsStr + ", compressType rpcc.MRPC_PACKAGE_COMPRESS, timeout uint32) (*" + functionAttrInterface.FuncReturn.TypeName + ", error) {\n";
             strs += "\tconst funcID = " + functionAttrInterface.FuncHash + "\n";
             strs += "\tbuilder := flatbuffers.NewBuilder(512)\n";
             strs += "\t//input flatbuffer code for " + v.TypeName + "FB class\n";
             strs += ParseStruct.CreateSerializeCodeForFlatbuffer((ParseStruct)Vars.GetStruct(v.TypeName),
                                                                          v.VarName);
             strs += "\tbuilder.Finish(" + v.VarName + "Pos)\n";
-            strs += "\treq := rpclient.NewRequest(funcID, compressType, builder.FinishedBytes())\n";
+            strs += "\treq := rpclient.NewRequest(funcID, compressType,timeout, builder.FinishedBytes())\n";
             strs += "\tresp, err := broker.SyncCall(req, rpcc.MRPC_PT_FLATBUFF)\n";
             strs += "\tif err != nil{\n";
             strs += "\t\treturn nil, err\n";
@@ -201,7 +201,7 @@ namespace IDL
             string funcArgsStr = v.VarName + " " + v.TypeName;
 
             string strs = "func (" + selfName + " *" + serviceName + ") " + StringTo.ToUpper(functionAttrInterface.FuncName, 0) + "(";
-            strs += funcArgsStr + ", timeout int" + ") (*" + functionAttrInterface.FuncReturn.TypeName + ", error) {\n";
+            strs += funcArgsStr + ", timeout uint32" + ") (*" + functionAttrInterface.FuncReturn.TypeName + ", error) {\n";
             strs += "\ts := " + interfaceName + "{}\n";
             strs += "\treturn s." + StringTo.ToLower(functionAttrInterface.FuncName, 0) + "Interface(" + selfName + "._brokerImpl" +
                     ", " + v.VarName + ", " + selfName + "._compressType, timeout)\n";

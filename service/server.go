@@ -40,7 +40,7 @@ func New(opts ...Option) (*Server, error) {
 	pCore.WithLogger(pLogAgent)
 
 	delegates := &delegateBinder{
-		_maps: map[uint]*delegateHandle{},
+		_maps: map[uint32]*delegateHandle{},
 	}
 
 	server := &Server{
@@ -156,7 +156,7 @@ func (s *Server) Shutdown() {
 	s._network.Shutdown()
 }
 
-func (s *Server) BindDelegate(funcID uint, delegate RequestDelegate, name string) {
+func (s *Server) BindDelegate(funcID uint32, delegate RequestDelegate, name string) {
 	s._delegates.bind(funcID, delegate, name)
 }
 

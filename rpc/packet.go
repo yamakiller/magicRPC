@@ -15,7 +15,7 @@ func (p *Packet) Size() int {
 	return p._header.GetPackageSize() + p._header.GetBodySize()
 }
 
-func (p *Packet) Func() uint {
+func (p *Packet) Func() uint32 {
 	return p._header._func
 }
 

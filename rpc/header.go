@@ -15,11 +15,11 @@ type Header struct {
 	_status   uint8
 	_reserved [2]byte
 	_sequence uint32
-	_func     uint
+	_func     uint32
 	_bodysize uint16
 }
 
-func (h *Header) Init(tpp MRPC_PACKAGE_PROTOCOL, sequence uint32, compressType MRPC_PACKAGE_COMPRESS, isNonblock bool, fun uint) {
+func (h *Header) Init(tpp MRPC_PACKAGE_PROTOCOL, sequence uint32, compressType MRPC_PACKAGE_COMPRESS, isNonblock bool, fun uint32) {
 	h._flag = _MRPC_HEADER_FLAG[:]
 	h._ver = _RPC_VERSION
 	h._sequence = sequence
@@ -37,7 +37,7 @@ func (h *Header) GetPackageSize() int {
 	return len(h._flag) + h.size() + _MRPC_PREFIX_SIZE
 }
 
-func (h *Header) GetFunc() uint {
+func (h *Header) GetFunc() uint32 {
 	return h._func
 }
 

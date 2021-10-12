@@ -5,7 +5,7 @@ import (
 )
 
 type RequestDelegate func(*boxs.Context, *Request) error
-type delegateGet func(uint) *delegateHandle
+type delegateGet func(uint32) *delegateHandle
 
 type delegateHandle struct {
 	_func RequestDelegate
@@ -13,10 +13,10 @@ type delegateHandle struct {
 }
 
 type delegateBinder struct {
-	_maps map[uint]*delegateHandle
+	_maps map[uint32]*delegateHandle
 }
 
-func (d *delegateBinder) bind(id uint, delegate RequestDelegate, name string) {
+func (d *delegateBinder) bind(id uint32, delegate RequestDelegate, name string) {
 	//strings.TrimSuffix(filepath.Ext(runtime.FuncForPC(reflect.ValueOf(delegate).Pointer()).Name()), "-fm")
 	d._maps[id] = &delegateHandle{
 		_func: delegate,
@@ -24,7 +24,7 @@ func (d *delegateBinder) bind(id uint, delegate RequestDelegate, name string) {
 	}
 }
 
-func (d *delegateBinder) get(id uint) *delegateHandle {
+func (d *delegateBinder) get(id uint32) *delegateHandle {
 	if _, ok := d._maps[id]; !ok {
 		return nil
 	}

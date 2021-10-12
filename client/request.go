@@ -2,10 +2,11 @@ package client
 
 import "github.com/yamakiller/magicRPC/rpc"
 
-func NewRequest(funcID uint, compressType rpc.MRPC_PACKAGE_COMPRESS, payload []byte) *Request {
+func NewRequest(funcID uint32, compressType rpc.MRPC_PACKAGE_COMPRESS, timeot uint32, payload []byte) *Request {
 	request := &Request{
 		_compressType: compressType,
 		_func:         funcID,
+		_timeout:      timeot,
 	}
 
 	if payload != nil {
@@ -20,7 +21,7 @@ type Request struct {
 	_compressType   rpc.MRPC_PACKAGE_COMPRESS
 	_responseStatus rpc.RESPONSE_STATUS
 	_payload        []byte
-	_func           uint
+	_func           uint32
 	_nonblock       bool
 	_timestamp      uint32
 	_timeout        uint32
@@ -35,7 +36,7 @@ func (r *Request) Pop() []byte {
 	return r._payload
 }
 
-func (r *Request) bindFunc(fun uint) {
+func (r *Request) bindFunc(fun uint32) {
 	r._func = fun
 }
 
@@ -43,7 +44,7 @@ func (r *Request) GetArgsNum() int {
 	return 1
 }
 
-func (r *Request) GetCallFuncID() uint {
+func (r *Request) GetCallFuncID() uint32 {
 	return r._func
 }
 
