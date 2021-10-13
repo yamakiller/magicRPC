@@ -3,6 +3,7 @@ package service
 import (
 	"crypto/tls"
 	"errors"
+	"reflect"
 	"sync"
 
 	flatbuffers "github.com/google/flatbuffers/go"
@@ -131,8 +132,18 @@ func (s *Server) ListenTCPAndServe(addr string) error {
 	s._network = &netboxs.TCPBox{
 		Box: *boxs.SpawnBox(nil),
 	}
+	_, err := s._core.New(func(pid *actors.PID) actors.Actor {
+		s._network.(*netboxs.TCPBox).WithPID(pid)
+		s._network.(*netboxs.TCPBox).WithMax(int32(s._clientOfMax))
+		s._network.(*netboxs.TCPBox).Register(reflect.TypeOf(&netmsgs.Accept{}), s.onAccept)
+		s._network.(*netboxs.TCPBox).Register(reflect.TypeOf(&netmsgs.Message{}), s.onMessage)
+		s._network.(*netboxs.TCPBox).Register(reflect.TypeOf(&netmsgs.Closed{}), s.onClosed)
+		return s._network.(actors.Actor)
+	})
+	if err != nil {
+		return err
+	}
 
-	s._network.WithMax(s._clientOfMax)
 	s._network.WithPool(
 		&connPools{
 			_bfsize: rpc.MRPC_PACKAGE_MAX * 2,
