@@ -1,6 +1,9 @@
 package rpctime
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 var (
 	_offsetTimespace int64
@@ -14,5 +17,6 @@ func init() {
 
 func Click() uint32 {
 	timespace := time.Now().UTC().UnixNano() / 1e6
+	fmt.Println(_offsetTimespace, timespace, timespace-_offsetTimespace)
 	return uint32(timespace - _offsetTimespace)
 }

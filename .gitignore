@@ -1,4 +1,4 @@
 vendor/*
 rpc-idl/bin/*
-rpc-idl/obj/*
-rpc-idl/out/*
+rpc-idl/bin/Debug/*
+rpc-idl/bin/Debug/net5.0/*

@@ -133,20 +133,19 @@ func (s *Server) ListenTCPAndServe(addr string) error {
 		Box: *boxs.SpawnBox(nil),
 	}
 
+	s._network = box
 	_, err := s._core.New(func(pid *actors.PID) actors.Actor {
-		box.WithPID(pid)
-		box.WithMax(int32(s._clientOfMax))
-		box.Register(reflect.TypeOf(&netmsgs.Accept{}), s.onAccept)
-		box.Register(reflect.TypeOf(&netmsgs.Message{}), s.onMessage)
-		box.Register(reflect.TypeOf(&netmsgs.Closed{}), s.onClosed)
-		return box
+		s._network.(*netboxs.TCPBox).WithPID(pid)
+		s._network.(*netboxs.TCPBox).WithMax(int32(s._clientOfMax))
+		s._network.(*netboxs.TCPBox).Register(reflect.TypeOf(&netmsgs.Accept{}), s.onAccept)
+		s._network.(*netboxs.TCPBox).Register(reflect.TypeOf(&netmsgs.Message{}), s.onMessage)
+		s._network.(*netboxs.TCPBox).Register(reflect.TypeOf(&netmsgs.Closed{}), s.onClosed)
+		return s._network.(actors.Actor)
 	})
 	if err != nil {
 		return err
 	}
 
-	s._network = box
-	s._network.WithMax(s._clientOfMax)
 	s._network.WithPool(
 		&connPools{
 			_bfsize: rpc.MRPC_PACKAGE_MAX * 2,
