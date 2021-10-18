@@ -8,6 +8,7 @@ var (
 	ErrProtocolHeaderValid  = errors.New("protocol header valid")
 	ErrProtocolDataOverflow = errors.New("protocol data overflow")
 	ErrProtocolKeepalive    = errors.New("protocol keepalive error")
+	ErrIsProtocolKeepalive  = errors.New("protocol keepalive ok")
 	ErrUndefineCompressMode = errors.New("undefine compress mode")
 )
 

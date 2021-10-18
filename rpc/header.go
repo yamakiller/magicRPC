@@ -215,12 +215,14 @@ func (h *Header) unmarshal(r io.Reader) error {
 		if err = binary.Read(r, binary.BigEndian, &_func); err != nil {
 			return err
 		}
+		h._func = uint(_func)
 	}
 	if util.SysteamBits() == util.SYS32 {
 		_func := uint32(h._func)
 		if err = binary.Read(r, binary.BigEndian, &_func); err != nil {
 			return err
 		}
+		h._func = uint(_func)
 	}
 
 	if err = binary.Read(r, binary.BigEndian, &h._sequence); err != nil {

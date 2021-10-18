@@ -176,14 +176,27 @@ func (b *Broker) DebugLog(fmt string, args ...interface{}) {
 
 func (b *Broker) UnSeria(r io.Reader) (interface{}, int, error) {
 	pk, err := rpc.Decoding(r)
-	if err != nil {
-		return nil, -1, err
+	if err != nil && err == rpcerror.ErrIsProtocolKeepalive {
+		//TODO: 心跳回复
+		keepReq := &Request{
+			_compressType:   b._packageCompress,
+			_responseStatus: rpc.RS_OK,
+			_func:           0,
+			_nonblock:       false,
+			_timestamp:      0,
+			_timeout:        0,
+			_sequeNum:       0,
+		}
+
+		if err := b._client.SendTo(keepReq); err != nil {
+			return nil, -1, err
+		}
+
+		return nil, 0, nil
 	}
 
-	//kleepalive data
-	if pk.Func() == 0 {
-		//TODO: 心跳回复
-		return nil, 0, nil
+	if err != nil {
+		return nil, -1, err
 	}
 
 	return pk, pk.Size(), nil
@@ -214,6 +227,9 @@ func (b *Broker) recvServe() {
 		pk, err := b._client.Parse()
 		if err != nil {
 			return
+		}
+		if pk == nil {
+			continue
 		}
 		b.onMessage(pk)
 	}
