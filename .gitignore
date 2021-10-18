@@ -1,4 +1,8 @@
 vendor/*
 rpc-idl/bin/*
-rpc-idl/bin/Debug/*
-rpc-idl/bin/Debug/net5.0/*
+rpc-idl/bin/Debug
+rpc-idl/obj/Debug/net5.0/.NETCoreApp,Version=v5.0.AssemblyAttributes.cs
+rpc-idl/obj/Debug/net5.0/rpc-idl.AssemblyInfo.cs
+rpc-idl/obj/Debug/net5.0/rpc-idl.GeneratedMSBuildEditorConfig.editorconfig
+rpc-idl/obj/Debug/net5.0/rpc-idl.AssemblyInfoInputs.cache
+rpc-idl/obj/Debug/net5.0/rpc-idl.csproj.AssemblyReference.cache
