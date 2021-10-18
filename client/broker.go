@@ -1,6 +1,7 @@
 package client
 
 import (
+	"bufio"
 	"context"
 	"crypto/tls"
 	"errors"
@@ -209,6 +210,16 @@ func (b *Broker) Seria(msg interface{}, w io.Writer) (int, error) {
 		err error
 		ret int
 	)
+	h := rpc.Header{}
+	h.Init(b._packageProtocol, req._sequeNum, req._compressType, req._nonblock, req._func)
+	packageSize := h.GetPackageSize()
+	if len(req._payload) > (rpc.MRPC_PACKAGE_MAX*2 - w.(*bufio.Writer).Buffered() - packageSize) {
+		if w.(*bufio.Writer).Buffered() > 0 {
+			if err = w.(*bufio.Writer).Flush(); err != nil {
+				return ret, err
+			}
+		}
+	}
 	if ret, err = rpc.Encoding(w,
 		b._packageProtocol,
 		req._sequeNum,
