@@ -5,6 +5,7 @@ import (
 	"io"
 	"unsafe"
 
+	"github.com/yamakiller/magicLibs/util"
 	"github.com/yamakiller/magicRPC/rpc/rpcerror"
 )
 
@@ -15,11 +16,11 @@ type Header struct {
 	_status   uint8
 	_reserved [2]byte
 	_sequence uint32
-	_func     uint32
+	_func     uint
 	_bodysize uint16
 }
 
-func (h *Header) Init(tpp MRPC_PACKAGE_PROTOCOL, sequence uint32, compressType MRPC_PACKAGE_COMPRESS, isNonblock bool, fun uint32) {
+func (h *Header) Init(tpp MRPC_PACKAGE_PROTOCOL, sequence uint32, compressType MRPC_PACKAGE_COMPRESS, isNonblock bool, fun uint) {
 	h._flag = _MRPC_HEADER_FLAG[:]
 	h._ver = _RPC_VERSION
 	h._sequence = sequence
@@ -37,7 +38,7 @@ func (h *Header) GetPackageSize() int {
 	return len(h._flag) + h.size() + _MRPC_PREFIX_SIZE
 }
 
-func (h *Header) GetFunc() uint32 {
+func (h *Header) GetFunc() uint {
 	return h._func
 }
 
@@ -149,8 +150,17 @@ func (h *Header) marshal(w io.Writer) error {
 		return err
 	}
 
-	if err = binary.Write(w, binary.BigEndian, h._func); err != nil {
-		return err
+	if util.SysteamBits() == util.SYS64 {
+		_func := uint64(h._func)
+		if err = binary.Write(w, binary.BigEndian, _func); err != nil {
+			return err
+		}
+	}
+	if util.SysteamBits() == util.SYS32 {
+		_func := uint32(h._func)
+		if err = binary.Write(w, binary.BigEndian, _func); err != nil {
+			return err
+		}
 	}
 
 	if err = binary.Write(w, binary.BigEndian, h._sequence); err != nil {
@@ -200,9 +210,17 @@ func (h *Header) unmarshal(r io.Reader) error {
 	if err = reads(r, h._reserved[:]); err != nil {
 		return err
 	}
-
-	if err = binary.Read(r, binary.BigEndian, &h._func); err != nil {
-		return err
+	if util.SysteamBits() == util.SYS64 {
+		_func := uint64(h._func)
+		if err = binary.Read(r, binary.BigEndian, &_func); err != nil {
+			return err
+		}
+	}
+	if util.SysteamBits() == util.SYS32 {
+		_func := uint32(h._func)
+		if err = binary.Read(r, binary.BigEndian, &_func); err != nil {
+			return err
+		}
 	}
 
 	if err = binary.Read(r, binary.BigEndian, &h._sequence); err != nil {

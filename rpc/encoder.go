@@ -11,7 +11,7 @@ func Encoding(w io.Writer,
 	sequence uint32,
 	compressType MRPC_PACKAGE_COMPRESS,
 	isNonblock bool,
-	fun uint32,
+	fun uint,
 	payload []byte) (int, error) {
 	h := Header{}
 	h.Init(tpp, sequence, compressType, isNonblock, fun)

@@ -10,7 +10,7 @@ type Request struct {
 	_compressType    rpc.MRPC_PACKAGE_COMPRESS
 	_responseStatus  rpc.RESPONSE_STATUS
 	_playload        []byte
-	_func            uint32
+	_func            uint
 	_nonblock        bool
 	_timestamp       uint32
 	_timeout         uint32
@@ -33,7 +33,7 @@ func (r *Request) Pop() []byte {
 	return r._playload
 }
 
-func (r *Request) bindFunc(fun uint32) {
+func (r *Request) bindFunc(fun uint) {
 	r._func = fun
 }
 
@@ -49,7 +49,7 @@ func (r *Request) GetArgsNum() int {
 	return 1
 }
 
-func (r *Request) GetCallFuncID() uint32 {
+func (r *Request) GetCallFuncID() uint {
 	return r._func
 }
 

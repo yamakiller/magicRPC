@@ -62,7 +62,16 @@ func (c *Connection) Seria(msg interface{}) error {
 			resp.WithStatus(rpc.RS_TIMEOUT)
 		}
 	}
-
+	h := rpc.Header{}
+	h.Init(rpc.MRPC_PT_FLATBUFF, resp._sequeNum, resp._compressType, resp._nonblock, resp._func)
+	packageSize := h.GetPackageSize()
+	if len(resp._playload) > (rpc.MRPC_PACKAGE_MAX*2 - c.Writer().Buffered() - packageSize) {
+		if c.Writer().Buffered() > 0 {
+			if err = c.Writer().Flush(); err != nil {
+				return err
+			}
+		}
+	}
 	if _, err = rpc.Encoding(c.Writer(),
 		rpc.MRPC_PT_FLATBUFF,
 		resp._sequeNum,
@@ -75,6 +84,11 @@ func (c *Connection) Seria(msg interface{}) error {
 
 	if len(c.Pop()) > 0 {
 		goto exit
+	}
+	if c.Writer().Buffered() > 0 {
+		if err = c.Writer().Flush(); err != nil {
+			return err
+		}
 	}
 exit:
 	return nil
