@@ -142,6 +142,7 @@ func (b *Broker) SyncCall(req *Request, prootocol rpc.MRPC_PACKAGE_PROTOCOL) (*R
 	sn := b.getSerialOfNumber()
 	req._sequeNum = sn
 	req._timestamp = rpctime.Click()
+	b._clientRequestSn = sn
 
 	if err := b._client.SendTo(req); err != nil {
 		b._clientRequestSync = 0
