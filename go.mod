@@ -8,6 +8,6 @@ require (
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/sirupsen/logrus v1.8.1
 	github.com/takama/daemon v1.0.0 // indirect
-	github.com/yamakiller/magicLibs v1.3.0
-	github.com/yamakiller/magicNet v1.3.0
+	github.com/yamakiller/magicLibs v1.3.4
+	github.com/yamakiller/magicNet v1.3.4
 )

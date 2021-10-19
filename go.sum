@@ -211,10 +211,14 @@ github.com/yamakiller/magicLibs v1.2.0 h1:zkCJ+RB0UJf+0UQI3vkfaNRnDmlsROjrJpkPJg
 github.com/yamakiller/magicLibs v1.2.0/go.mod h1:CodGMhEqjFYPHdeqFIZx0wA9MVWLPNe0xrjnGmlgNpg=
 github.com/yamakiller/magicLibs v1.3.0 h1:pFPCqTwz2VSGMMQFdH9ewE9AwFEW0ES4yyvOFlw197I=
 github.com/yamakiller/magicLibs v1.3.0/go.mod h1:03wloHZYg+Rn+nAckgZOnG1s9PA6FAuUSLELop9ZeV4=
+github.com/yamakiller/magicLibs v1.3.4 h1:/1APTHlBNVESUob6UzFB1Lr+8t7DRhZVc1AnrMkn9nk=
+github.com/yamakiller/magicLibs v1.3.4/go.mod h1:03wloHZYg+Rn+nAckgZOnG1s9PA6FAuUSLELop9ZeV4=
 github.com/yamakiller/magicNet v1.2.0 h1:IUneXR6m6pfdkiY75dFdN9dafI/g+GKrybY0BIDvqCQ=
 github.com/yamakiller/magicNet v1.2.0/go.mod h1:8/DJfQhiLKbg0zsfmr0xXZJQ6fQG8yhUKP0A45KkPfw=
 github.com/yamakiller/magicNet v1.3.0 h1:5/kQsIHgBwE235nOJEznK2z1OxRCCbRzkCYKAhC/Atc=
 github.com/yamakiller/magicNet v1.3.0/go.mod h1:96CQjwE6PJL8VrGqceOKkoZGn5Ad2l3wU5kiozDEfSE=
+github.com/yamakiller/magicNet v1.3.4 h1:iP+TAfNzfc2vGjcNehsCoohBMGr+tfFI+DRXz/c1zls=
+github.com/yamakiller/magicNet v1.3.4/go.mod h1:2Cj2Y1jigaIEPhD4xJK1S1dLjcAXRluYjFUY9fzm4bU=
 github.com/yamakiller/mgokcp v0.0.0-20200222140718-6b0595df611e/go.mod h1:7DdcfDkVVGVUvqB2TbMFXJGgaZQBjdSJqkmlfsKbe+M=
 github.com/yamakiller/mgokcp v1.2.0 h1:KeCu5vSu77nlKiKp8945ZZN7+Os9v3zTkOnckfvsbq0=
 github.com/yamakiller/mgokcp v1.2.0/go.mod h1:zV0iMj3V4FshBi8f7KFUudRSbekeJdTnfzJkcAyyPv8=

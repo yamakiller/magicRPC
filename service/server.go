@@ -129,11 +129,9 @@ type Server struct {
 
 func (s *Server) ListenTCPAndServe(addr string) error {
 	s._networkProtocol = rpc.MRPC_NETWORK_PROTOCOL_TCP
-	box := &netboxs.TCPBox{
+	s._network = &netboxs.TCPBox{
 		Box: *boxs.SpawnBox(nil),
 	}
-
-	s._network = box
 	_, err := s._core.New(func(pid *actors.PID) actors.Actor {
 		s._network.(*netboxs.TCPBox).WithPID(pid)
 		s._network.(*netboxs.TCPBox).WithMax(int32(s._clientOfMax))
@@ -141,7 +139,8 @@ func (s *Server) ListenTCPAndServe(addr string) error {
 		s._network.(*netboxs.TCPBox).Register(reflect.TypeOf(&netmsgs.Message{}), s.onMessage)
 		s._network.(*netboxs.TCPBox).Register(reflect.TypeOf(&netmsgs.Closed{}), s.onClosed)
 		return s._network.(actors.Actor)
-	})
+	}, actors.PriorityHigh)
+
 	if err != nil {
 		return err
 	}
@@ -157,18 +156,18 @@ func (s *Server) ListenTCPAndServe(addr string) error {
 
 func (s *Server) ListenTLSAndServe(addr string, ptls *tls.Config) error {
 	s._networkProtocol = rpc.MRPC_NETWORK_PROTOCOL_TLS
-	box := &netboxs.TCPBox{
+	s._network = &netboxs.TCPBox{
 		Box: *boxs.SpawnBox(nil),
 	}
 
 	_, err := s._core.New(func(pid *actors.PID) actors.Actor {
-		box.WithPID(pid)
-		box.WithMax(int32(s._clientOfMax))
-		box.Register(reflect.TypeOf(&netmsgs.Accept{}), s.onAccept)
-		box.Register(reflect.TypeOf(&netmsgs.Message{}), s.onMessage)
-		box.Register(reflect.TypeOf(&netmsgs.Closed{}), s.onClosed)
-		return box
-	})
+		s._network.(*netboxs.TCPBox).WithPID(pid)
+		s._network.(*netboxs.TCPBox).WithMax(int32(s._clientOfMax))
+		s._network.(*netboxs.TCPBox).Register(reflect.TypeOf(&netmsgs.Accept{}), s.onAccept)
+		s._network.(*netboxs.TCPBox).Register(reflect.TypeOf(&netmsgs.Message{}), s.onMessage)
+		s._network.(*netboxs.TCPBox).Register(reflect.TypeOf(&netmsgs.Closed{}), s.onClosed)
+		return s._network.(actors.Actor)
+	}, actors.PriorityHigh)
 
 	if err != nil {
 		return err

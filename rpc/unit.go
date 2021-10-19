@@ -62,3 +62,14 @@ const (
 	RS_TIMEOUT = RESPONSE_STATUS(1)
 	RS_FAILD   = RESPONSE_STATUS(2)
 )
+
+type _SYSBit uint
+
+const (
+	_SYS32 _SYSBit = 32
+	_SYS64 _SYSBit = 64
+)
+
+func getSys() _SYSBit {
+	return _SYSBit(32 << (^uint(0) >> 63))
+}

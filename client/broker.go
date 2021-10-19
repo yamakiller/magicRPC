@@ -7,11 +7,13 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"sync"
 	"sync/atomic"
 	"time"
 
 	"github.com/yamakiller/magicLibs/log"
-	magiclibconn "github.com/yamakiller/magicLibs/net/connection"
+	mlibconn "github.com/yamakiller/magicLibs/net/connection"
+	mlibtcp "github.com/yamakiller/magicLibs/net/connection/tcp"
 	"github.com/yamakiller/magicLibs/util"
 	"github.com/yamakiller/magicRPC/rpc"
 	"github.com/yamakiller/magicRPC/rpc/rpcerror"
@@ -42,13 +44,9 @@ func New(opts ...Option) (*Broker, error) {
 		_log:               opt._logAgent,
 	}
 
-	broker._client = &magiclibconn.TCPClient{
-		ReadBufferSize:  rpc.MRPC_PACKAGE_MAX * 2,
-		WriteBufferSize: rpc.MRPC_PACKAGE_MAX * 2,
-		WriteWaitQueue:  opt._sendBufferOfNumber,
-		S:               broker,
-		E:               broker,
-	}
+	broker._client = mlibtcp.New(rpc.MRPC_PACKAGE_MAX*2, opt._sendBufferOfNumber)
+	broker._client.(*mlibtcp.Client).Serializer = broker
+	broker._client.(*mlibtcp.Client).Exception = broker
 
 	return broker, nil
 }
@@ -101,10 +99,11 @@ var defaultOptions = Options{_sendBufferOfNumber: 8,
 
 type Broker struct {
 	_name              string
-	_client            magiclibconn.Client
+	_client            mlibconn.Client
 	_clientRequestSn   uint32
 	_clientRequestSync uint32
 	_clientRecv        chan *Response
+	_clientWait        sync.WaitGroup
 	_log               log.LogAgent
 	_networkProtocol   rpc.MRPC_NETWORK_PROTOCOL
 	_packageProtocol   rpc.MRPC_PACKAGE_PROTOCOL
@@ -130,6 +129,12 @@ func (b *Broker) TLSConnect(addr string, config *tls.Config, timeout int) error 
 }
 
 func (b *Broker) SyncCall(req *Request, prootocol rpc.MRPC_PACKAGE_PROTOCOL) (*Response, error) {
+	b._clientWait.Add(1)
+	defer b._clientWait.Done()
+
+	if b._clientRecv == nil {
+		return nil, errors.New("broker connect destoryed")
+	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(req._timeout)*time.Millisecond)
 	defer cancel()
@@ -146,8 +151,6 @@ func (b *Broker) SyncCall(req *Request, prootocol rpc.MRPC_PACKAGE_PROTOCOL) (*R
 	select {
 	case resp := <-b._clientRecv:
 		return resp, nil
-	case <-b._client.IsConnected().(context.Context).Done():
-		return nil, errors.New("connection is  disconnect")
 	case <-ctx.Done():
 		return nil, rpcerror.ErrBrokerRequestTimeOut
 	}
@@ -155,8 +158,12 @@ func (b *Broker) SyncCall(req *Request, prootocol rpc.MRPC_PACKAGE_PROTOCOL) (*R
 
 func (b *Broker) Close() {
 	b._client.Close()
+}
 
-	close(b._clientRecv)
+func (b *Broker) Shutdown() {
+	if b._clientRecv != nil {
+		close(b._clientRecv)
+	}
 }
 
 func (b *Broker) Error(err error) {

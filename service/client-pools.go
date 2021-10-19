@@ -27,7 +27,7 @@ func (slf *clientPools) get() *client {
 		c.Box.WithPID(pid)
 		c.Box.Register(reflect.TypeOf(&Request{}), c.onRequest)
 		return &c.Box
-	})
+	}, actors.PriorityNomal)
 
 	return c
 }
